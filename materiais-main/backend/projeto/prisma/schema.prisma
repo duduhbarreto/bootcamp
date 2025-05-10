@@ -1,0 +1,42 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String             @id @default(uuid())
+  name             String
+  email            String             @unique
+  cpf              String             @unique
+  password         String
+  avatar           String
+  xp               Int                @default(0)
+  level            Int                @default(1)
+  deletedAt        DateTime?
+  UserAchievements UserAchievements[]
+
+  @@map("users")
+}
+
+model Achievement {
+  id               String             @id @default(uuid())
+  name             String             @unique
+  criterion        String
+  UserAchievements UserAchievements[]
+
+  @@map("achievements")
+}
+
+model UserAchievements {
+  id            String      @id @default(uuid())
+  user          User        @relation(fields: [userId], references: [id])
+  achievement   Achievement @relation(fields: [achievementId], references: [id])
+  userId        String
+  achievementId String
+
+  @@unique([userId, achievementId])
+}
