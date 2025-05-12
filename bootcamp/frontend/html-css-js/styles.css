@@ -1,0 +1,196 @@
+/* .card {
+    @apply bg-neutral-100 border border-neutral-500;
+
+    background-color: #fff;
+    border: 1px solid #ccc;
+} */
+
+
+
+/* .grid {
+    max-width: 500px;
+    height: 50vh;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-areas: 'box4 box2'
+                         'box1 box3';
+    justify-content: center;
+    justify-items: center;
+    align-items: center;
+    align-content: center;
+    gap: 20px;
+    column-gap: 40px;
+    row-gap: 20px;
+} */
+
+:root {
+    --color-red: #F00;
+}
+
+.grid {
+    color: var(--color-red);
+    display: grid;
+}
+
+p {
+    color: var(--color-red);
+}
+
+@media (max-width: 640px) and (orientation: landscape) {
+    :root {
+        --color-red: #0F0;
+    }
+
+    .grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (min-width: 600px) and (max-width: 800px) and (orientation: landscape) {
+    .grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 800px) {
+    .grid {
+        grid-template-columns: repeat(5, 1fr);
+
+    }
+}
+
+.box1,
+.box2,
+.box3,
+.box4,
+.box5 {
+    /* flex: 1;
+    min-width: 150px; */
+    padding: 40px;
+}
+
+.box1 {
+    /* grid-area: box1; */
+    background-color: red;
+    /* grid-column: 1 / -1;
+    grid-row: 2; */
+}
+
+.box2 {
+    /* grid-area: box2; */
+    background-color: aqua;
+    /* grid-column: span 2; */
+}
+
+.box3 {
+    /* grid-area: box3; */
+    background-color: blueviolet;
+}
+
+.box4 {
+    /* grid-area: box4; */
+    background-color: darkseagreen;
+}
+
+.box5 {
+    /* grid-area: box4; */
+    background-color: yellow;
+}
+
+/* .a {
+    width: 340px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 20px;
+}
+
+p {
+    width: 100px;
+    margin: 0;
+    display: block;
+} */
+
+/* .a {
+    padding: 50px;
+    background-color: aquamarine;
+    position: relative;
+}
+
+.b {
+    padding: 50px;
+    background-color: bisque;
+    border: 50px solid red;
+}
+
+button:last-of-type {
+    margin-left: -40px;
+    
+}
+
+p {
+    border: 50px solid blue;
+} */
+
+/* 
+div button {
+    
+    padding: 20px 10px 50px 100px;
+    margin: 20px;
+    
+    border: 10px solid red;
+}
+
+div button:last-of-type {
+    margin-left: -40px;
+    position: absolute;
+} */
+
+/* body {
+    height: 200vh;
+}
+
+header {
+    position: sticky;
+    top: 0;
+} */
+
+/* h1 {
+    color: blue;
+    font-family: sans-serif;
+    font-size: 100px;
+}
+
+div {
+    height: 200px;
+    font-weight: 400;
+    font-size: 50px;
+    background-color: burlywood;
+    border: 5px solid darkgoldenrod;
+    border-radius: 20px;
+    position: relative;
+}
+
+div span {
+    position: fixed;
+    top: -25px;
+    right: 20px;
+    left: 50px;
+    bottom: 120px;
+    z-index: 1;
+}
+
+div button {
+    opacity: 0.35;
+    font-size: 50px;
+    transform: translateX(-50px);
+    position: absolute;
+    z-index: 2;
+}
+
+div button:hover {
+    opacity: 1;
+} */
