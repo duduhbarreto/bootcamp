@@ -1,17 +1,27 @@
 import { describe, expect, test, jest, beforeEach, afterEach } from "@jest/globals";
 import { createBucket, uploadImage } from "../../services/s3-service";
-import { S3Client, CreateBucketCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 
-// Mock do S3Client
+// Importando os tipos, mas sem a implementação real
+import type { S3Client, CreateBucketCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+
+// Mock manual explícito (sem jest.mock)
+const mockSend = jest.fn<() => Promise<unknown>>().mockResolvedValue({});
+const mockCreateBucketCommand = jest.fn<(params: { Bucket: string }) => { input: { Bucket: string } }>().mockImplementation((params) => {
+  return { input: params };
+});
+const mockPutObjectCommand = jest.fn<(params: { Bucket: string; Key: string; Body: Buffer; ContentType: string }) => { Bucket: string; Key: string; Body: Buffer; ContentType: string }>().mockImplementation((params) => params);
+
+// Mock da classe S3Client
+const mockS3Client = {
+  send: mockSend
+};
+
+// Substituir as implementações reais por mocks
 jest.mock("@aws-sdk/client-s3", () => {
-  const mockSend = jest.fn().mockImplementation(async () => {return {}});
-  
   return {
-    S3Client: jest.fn().mockImplementation(() => ({
-      send: mockSend
-    })),
-    CreateBucketCommand: jest.fn(),
-    PutObjectCommand: jest.fn()
+    S3Client: jest.fn().mockImplementation(() => mockS3Client),
+    CreateBucketCommand: mockCreateBucketCommand,
+    PutObjectCommand: mockPutObjectCommand
   };
 });
 
@@ -19,7 +29,10 @@ describe("S3 Service", () => {
   const originalEnv = process.env;
   
   beforeEach(() => {
+    // Limpar todos os mocks
     jest.clearAllMocks();
+    
+    // Configurar variáveis de ambiente para os testes
     process.env = { 
       ...originalEnv,
       BUCKET_NAME: "testbucket",
@@ -40,7 +53,9 @@ describe("S3 Service", () => {
       
       await createBucket();
       
-      expect(CreateBucketCommand).toHaveBeenCalledWith({ Bucket: "testbucket" });
+      // Verificar se o comando foi criado com o bucket correto
+      expect(mockCreateBucketCommand).toHaveBeenCalledWith({ Bucket: "testbucket" });
+      expect(mockSend).toHaveBeenCalled();
       expect(consoleSpy).toHaveBeenCalledWith("Bucket criado com sucesso.");
       
       consoleSpy.mockRestore();
@@ -49,6 +64,7 @@ describe("S3 Service", () => {
   
   describe("uploadImage", () => {
     test("Should upload an image and return URL", async () => {
+      // Mock do arquivo para teste
       const file = {
         originalname: "test.jpg",
         buffer: Buffer.from("test image data"),
@@ -58,19 +74,21 @@ describe("S3 Service", () => {
         size: Buffer.from("test image data").length,
         destination: "",
         filename: "",
-        path: "",
-        stream: {} as any
+        path: ""
       } as Express.Multer.File;
       
+      // Executar o método de upload
       const result = await uploadImage(file);
       
-      expect(PutObjectCommand).toHaveBeenCalledWith({
+      // Verificar se o comando foi criado com os parâmetros corretos
+      expect(mockPutObjectCommand).toHaveBeenCalledWith({
         Bucket: "testbucket",
         Key: "test.jpg",
         Body: file.buffer,
         ContentType: "image/jpeg"
       });
       
+      // Verificar se a URL retornada está correta
       expect(result).toBe("http://localhost:4566/testbucket/test.jpg");
     });
   });
